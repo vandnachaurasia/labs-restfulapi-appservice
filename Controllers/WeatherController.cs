@@ -84,5 +84,24 @@ public class WeatherController : ControllerBase
  
         return weather;
     }
+    [HttpDelete("{id}")]
+    public ActionResult<Weather> DeleteWeather(int id)
+    {
+        if (weatherContext.Weather == null)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, "Weather database not initialized");
+        }
+ 
+        var currentWeather = weatherContext.Weather.FirstOrDefault(x => x.ID == id);
+        if (currentWeather == null)
+        {
+            return NotFound();
+        }
+ 
+        weatherContext.Weather.Remove(currentWeather);
+        weatherContext.SaveChanges();
+ 
+        return currentWeather;
+    }
 }
 
