@@ -63,6 +63,26 @@ public class WeatherController : ControllerBase
 
         return weather;
     }
-
+[HttpPut("{id}")]
+    public ActionResult<Weather> UpdateWeather(int id, Weather weather)
+    {
+        if (weatherContext.Weather == null)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, "Weather database not initialized");
+        }
+ 
+        var currentWeather = weatherContext.Weather.FirstOrDefault(x => x.ID == id);
+        if (currentWeather == null)
+        {
+            return NotFound();
+        }
+ 
+        currentWeather.Temperature = weather.Temperature;
+        currentWeather.Humidity = weather.Humidity;
+        currentWeather.AirQuality = weather.AirQuality;
+        weatherContext.SaveChanges();
+ 
+        return weather;
+    }
 }
 
